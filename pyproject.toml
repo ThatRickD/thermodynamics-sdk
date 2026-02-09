@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thermodynamics-sdk"
+version = "1.0.0"
+authors = [
+  { name="Your Name", email="your.email@example.com" }, # Replace with actual author info
+]
+description = "A stable, minimal, correct foundation for modeling simple thermodynamic systems using the First Law of Thermodynamics."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["thermodynamics", "physics", "sdk", "first-law", "education"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/your-org/thermodynamics-sdk" # Replace with actual repo
+"Bug Tracker" = "https://github.com/your-org/thermodynamics-sdk/issues" # Replace with actual repo
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["thermodynamics_sdk*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+# No specific dependencies other than standard library for v1.0.0
+# [project.dependencies]
+# numpy = ">=1.20" # Example dependency if needed later

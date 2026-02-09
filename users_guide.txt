@@ -1,0 +1,99 @@
+Basic Usage Example
+
+Here's a quick demonstration of creating a system, performing calculations, and saving/loading its state.
+
+# From the project root, run: python examples/basic_usage.py
+from thermodynamics_sdk.core import ThermodynamicSystem, FirstLawCalculator, save_system_to_json, load_system_from_json
+import os
+
+# 1. Create a ThermodynamicSystem
+system = ThermodynamicSystem(internal_energy=100.0)
+print(f"Initial System: {system}")
+
+# 2. Apply changes (heat added TO system, work done BY system)
+system.heat_added = 200.0
+system.work_done = 70.0
+print(f"System after changes: Q={system.heat_added} J, W={system.work_done} J")
+
+# 3. Calculate change in internal energy (ΔU)
+delta_u = FirstLawCalculator.calculate_delta_u(system)
+print(f"Change in Internal Energy (ΔU): {delta_u} J")
+print(f"New Internal Energy: {system.internal_energy + delta_u} J")
+
+# 4. Demonstrate inverse calculation (find Q)
+known_delta_u = 50.0
+known_work_done = 20.0
+calculated_heat = FirstLawCalculator.calculate_heat_added(known_delta_u, known_work_done)
+print(f"Given ΔU={known_delta_u} J, W={known_work_done} J: Calculated Q={calculated_heat} J")
+
+# 5. Save and Load System State
+json_filename = "my_system_state.json"
+save_system_to_json(system, json_filename)
+print(f"System state saved to '{json_filename}'")
+
+loaded_system = load_system_from_json(json_filename)
+print(f"System state loaded: {loaded_system}")
+
+if os.path.exists(json_filename):
+    os.remove(json_filename) # Clean up
+    print(f"Cleaned up '{json_filename}'")
+
+Physics Conventions
+
+This SDK adheres strictly to the following conventions:
+First Law of Thermodynamics: ΔU = Q - W
+ΔU: Change in internal energy.
+Q: Heat added to the system (positive for heat entering, negative for heat leaving).
+W: Work done by the system (positive for work done by the system on surroundings, negative for work done by surroundings on system).
+Units: All energy quantities (internal_energy, heat_added, work_done, delta_u) are treated as scalar float values, representing Joules (J).
+No Hidden Conversions: The SDK performs no implicit unit conversions. It is the user's responsibility to ensure all input values are in Joules.
+No Implicit Assumptions: Calculations do not assume reversibility, specific process types (e.g., isothermal, adiabatic), or phase behavior.
+
+5. API Overview
+
+thermodynamics_sdk.core.ThermodynamicSystem
+
+Represents a single, lumped thermodynamic system.
+__init__(self, internal_energy: float = 0.0, heat_added: float = 0.0, work_done: float = 0.0)
+internal_energy (float): Property for the system's current internal energy.
+heat_added (float): Property for heat added to the system.
+work_done (float): Property for work done by the system.
+Type validation is enforced for all fields (must be float or int).
+thermodynamics_sdk.core.FirstLawCalculator
+
+Provides static methods for First Law calculations.
+calculate_delta_u(system: ThermodynamicSystem) -> float: Returns system.heat_added - system.work_done.
+calculate_heat_added(delta_u: float, work_done: float) -> float: Returns delta_u + work_done.
+calculate_work_done(delta_u: float, heat_added: float) -> float: Returns heat_added - delta_u.
+All methods are deterministic and side-effect free.
+JSON Persistence Functions
+
+save_system_to_json(system: ThermodynamicSystem, filename: str) -> None: Serializes a ThermodynamicSystem to JSON.
+load_system_from_json(filename: str) -> ThermodynamicSystem: Deserializes a ThermodynamicSystem from JSON.
+6. Stability Guarantees
+
+This SDK adheres to Semantic Versioning.
+1.x.y Series Guarantees:
+
+Physics Principles: The sign convention (ΔU = Q - W) and the treatment of all quantities as scalars in Joules will never change.
+Core API Stability:
+The ThermodynamicSystem class, its fields (internal_energy, heat_added, work_done), and their types will remain stable.
+The static methods of FirstLawCalculator (calculate_delta_u, calculate_heat_added, calculate_work_done) and their signatures will remain stable.
+The save_system_to_json and load_system_from_json function signatures will remain stable.
+JSON Schema Stability: The JSON format used for saving/loading ThermodynamicSystem instances is guaranteed stable for the entire 1.x series.
+What to Expect in 1.x.y Releases:
+
+Bug fixes.
+Documentation improvements.
+Non-breaking additional helper methods (e.g., new utility functions that do not alter existing API).
+Breaking Changes:
+
+Any changes that break the above guarantees will result in a major version increment (e.g., 2.0.0).
+7. Roadmap
+
+Future major versions (2.0.0+) may include:
+New Thermodynamic Laws: Introduction of the Second Law of Thermodynamics (Entropy).
+Process Modeling: Abstractions for specific thermodynamic processes (e.g., isothermal, adiabatic).
+Units Abstraction: Integration with a units library to handle unit conversions explicitly.
+Multi-component Systems: Support for interactions between multiple systems.
+Advanced Property Models: Integration with material property databases or equations of state.
